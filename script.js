@@ -28,7 +28,7 @@ const typeColors = {
 };
 
 // Tableau d'objets représentant les Pokémon
-const pokemons = [
+const pokemonsTab = [
     { name: 'Pikachu', type: 'Électrique', level: 35, img: 'pikachu.png' },
     { name: 'Bulbizarre', type: 'Plante,Poison', level: 15, img: 'bulbizarre.png' },
     { name: 'Salamèche', type: 'Feu', level: 20, img: 'salameche.png' },
@@ -47,3 +47,24 @@ const pokemons = [
     { name: 'Ronflex', type: 'Normal', level: 45, img: 'ronflex.png' },
     { name: 'Mewtwo', type: 'Psy', level: 70, img: 'mewtwo.png' }
 ];
+
+function displayPokemons() {
+    const conteneurPokemon = document.querySelector('.pokemon-container');
+
+    conteneurPokemon.innerHTML = '';
+
+    if(!pokemonsTab.length) {
+        conteneurPokemon.innerHTML = "<p>Dracaufeu a tout brulé,aucun Pokémon ne correspond à ta recherche</p>";
+        return;
+    }
+
+    let resHTML = '';
+    //Pour chaque pokémon du tableau pokemons
+    for (let pokemon of pokemonsTab) {
+        resHTML += `<p>${pokemon.name}</p>`;
+    }
+    // resHTML est créé pour n'appeler qu'une fois innerHTML
+    conteneurPokemon.innerHTML = resHTML;
+}
+
+displayPokemons();
