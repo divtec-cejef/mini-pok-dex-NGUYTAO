@@ -1,7 +1,7 @@
 /**
  * Exercice : Mini Pokédex
- * @author Drici Rédouane <steve.fallet@dvitec.ch>
- * @since 2024-09-03
+ * @author Drici Rédouane <redouane.drici@divtec.ch>
+ * @since 2024-09-09
  */
 
 'use strict';
@@ -49,6 +49,25 @@ const pokemonsTab = [
 ];
 
 /**
+ * genere le html pour les cartes pokemon
+ * @param pokemon les pokemons
+ * @returns {string} le html des cartes pokemon
+ */
+function generatePokemonCardHTML(pokemon) {
+
+    return `
+        <div class="pokemon-container">
+            <div class="pokemon-card" style="background: #705898;">
+                <img src="images/${pokemon.img}" alt="${pokemon.name}" class="pokemon-image">
+                <h2>${pokemon.name}</h2>
+                <div>Type: ${pokemon.type.replace(',', ' / ')}</div>
+                <div>Niveau: ${pokemon.level}</div>
+            </div>
+        </div>
+    `;
+}
+
+/**
  * Affiche les pokémons du tableau
  */
 function displayPokemons() {
@@ -65,12 +84,7 @@ function displayPokemons() {
     // Affiche le nom des Pokémons avec leurs types
     for (let pokemon of pokemonsTab) {
         let typesTab = pokemon.type.split(",");
-        resultatHtml += `<p>${pokemon.name}`;
-
-        for (let type of typesTab) {
-            resultatHtml += ` <small>${type}</small>`;
-        }
-        resultatHtml += `</p>`;
+        resultatHtml += generatePokemonCardHTML(pokemon);
     }
 
     divContainer.innerHTML = resultatHtml;
