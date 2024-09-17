@@ -1,125 +1,50 @@
-/**
-* Exercice : Mini Pokédex
-* @author Steve Fallet <steve.fallet@dvitec.ch>
-* @since 2024-09-01
-*/
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Pokédex</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Mini Pokédex</h1>
 
-'use strict';
+<!-- Menu de recherche, filtrage, et tri -->
+<div class="search-menu">
+  <!-- Champ de recherche -->
+  <input type="text" id="search-bar" placeholder="Rechercher un Pokémon par nom...">
+  <!-- Liste déroulante pour filtrer par type -->
+  <select id="type-filter">
+    <option value="">Tous les types</option>
+    <option value="Électrique">Électrique</option>
+    <option value="Plante">Plante</option>
+    <option value="Poison">Poison</option>
+    <option value="Feu">Feu</option>
+    <option value="Eau">Eau</option>
+    <option value="Normal">Normal</option>
+    <option value="Fée">Fée</option>
+    <option value="Spectre">Spectre</option>
+    <option value="Combat">Combat</option>
+    <option value="Vol">Vol</option>
+    <option value="Glace">Glace</option>
+    <option value="Roche">Roche</option>
+    <option value="Sol">Sol</option>
+    <option value="Psy">Psy</option>
+  </select>
+  <!-- Liste déroulante pour trier les Pokémons -->
+  <select id="sort-order">
+    <option value="name-asc">Nom (A-Z)</option>
+    <option value="name-desc">Nom (Z-A)</option>
+    <option value="level-asc">Niveau (croissant)</option>
+    <option value="level-desc">Niveau (décroissant)</option>
+  </select>
+</div>
 
-// Couleur par défaut pour les types de Pokémon non définis
-const DEFAULT_COLOR = 'red';
+<!-- Conteneur pour les cartes Pokémon -->
+<div class="pokemon-container">
+  <!-- Les cartes Pokémon apparaîtront ici -->
+</div>
 
-// Couleurs pour chaque type de Pokémon
-const typeColors = {
-'Électrique': '#FFD700',
-'Plante': '#78C850',
-'Poison': '#A040A0',
-'Feu': '#F08030',
-'Eau': '#6890F0',
-'Normal': '#A8A878',
-'Fée': '#EE99AC',
-'Spectre': '#705898',
-'Combat': '#C03028',
-'Vol': '#A890F0',
-'Glace': '#98D8D8',
-'Roche': '#B8A038',
-'Sol': '#E0C068',
-'Psy': '#F85888'
-};
-
-// Tableau d'objets représentant les Pokémon
-const pokemonsTab = [
-{ name: 'Pikachu', type: 'Électrique', level: 35, img: 'pikachu.png' },
-{ name: 'Bulbizarre', type: 'Plante,Poison', level: 15, img: 'bulbizarre.png' },
-{ name: 'Salamèche', type: 'Feu', level: 20, img: 'salameche.png' },
-{ name: 'Carapuce', type: 'Eau', level: 10, img: 'carapuce.png' },
-{ name: 'Rondoudou', type: 'Normal,Fée', level: 25, img: 'rondoudou.png' },
-{ name: 'Ectoplasma', type: 'Spectre,Poison', level: 45, img: 'ectoplasma.png' },
-{ name: 'Évoli', type: 'Normal,Combat', level: 22, img: 'evoli.png' },
-{ name: 'Dracaufeu', type: 'Feu,Vol', level: 50, img: 'dracaufeu.png' },
-{ name: 'Florizarre', type: 'Plante,Poison', level: 55, img: 'florizarre.png' },
-{ name: 'Tortank', type: 'Eau,toto', level: 52, img: 'tortank.png' },
-{ name: 'Mélofée', type: 'Fée', level: 18, img: 'melofee.png' },
-{ name: 'Raichu', type: 'Électrique', level: 40, img: 'raichu.png' },
-{ name: 'Magicarpe', type: 'Eau', level: 5, img: 'magicarpe.png' },
-{ name: 'Lokhlass', type: 'Eau,Glace', level: 35, img: 'lokhlass.png' },
-{ name: 'Onix', type: 'Roche,Sol', level: 30, img: 'onix.png' },
-{ name: 'Ronflex', type: 'Normal', level: 45, img: 'ronflex.png' },
-{ name: 'Mewtwo', type: 'Psy', level: 70, img: 'mewtwo.png' }
-];
-
-// Récupération des éléments HTML
-const searchBar = document.getElementById('search-bar');
-const selectType = document.getElementById('type-filter');
-
-
-/**
-* Fonction qui retourne le code HTML de la carte du pokémon passé en paramètre
-* @param pokemon { name: 'Mewtwo', type: 'Psy', level: 70, img: 'mewtwo.png' } un objet Pokémon
-*/
-function generatePokemonCardHTML(pokemon){
-let tabType = pokemon.type.split(',');
-let type1 = tabType[0];
-let type2 = tabType[1];
-let bgColor = typeColors[type1];
-
-// Si un deuxième type existe
-if(type2) {
-let t2 = typeColors[type2] || DEFAULT_COLOR;
-bgColor = `linear-gradient(to right, ${typeColors[type1]} 50%, ${t2} 50%);`;
-}
-return `<div class="pokemon-card"
-             style="background: ${bgColor};"
->
-  <img src="images/${pokemon.img}" alt="${pokemon.name}">
-  <h2>${pokemon.name}</h2>
-  <div>Type: ${pokemon.type.replace(',', ' / ')}</div>
-  <div>Niveau: ${pokemon.level}</div>
-</div>`;
-}
-
-/**
-* Affiche le nom des pokémons dans la <div class="pokemon-container">
-  */
-  function displayPokemons (tabPokemons) {
-  // Récupération de l'élément HTML <div class="pokemon-container">
-  const divContainer = document.querySelector('.pokemon-container');
-  // Vide le contenu du container
-  divContainer.innerHTML = '';
-  // Si tableau est vide, si la taille est de 0
-  if(!tabPokemons.length) {
-  divContainer.innerHTML = "<p>Dracaufeu a tout brûlé, aucun Pokémon ne correspond à ta recherche !</p>";
-  return; // Sort de la fonction
-  }
-  let resHTML = '';
-  // Pour chaque pokémon du tableau pokemons
-  for (let pokemon of tabPokemons) {
-  resHTML += generatePokemonCardHTML(pokemon);
-  }
-  // Ajoute les cartes au container
-  divContainer.innerHTML = resHTML;
-  }
-
-  /**
-  * Fonction qui retourne les pokémon qui contiennent
-  * dans leur nom le texte recherché
-  * @returns {*[]} Tableau de Pokémons
-  */
-  function filterAndSortPokemons () {
-  const recherche = searchBar.value;
-  // Filtre par txt dans le nom
-  let resultat = pokemonsTab.filter(pokemon => pokemon.name.toLowerCase().includes(recherche.toLowerCase()));
-
-  // Filtre par type
-  let type = selectType.value;
-  resultat = resultat.filter(pokemon => pokemon.type.includes(type));
-
-  displayPokemons(resultat)
-  }
-
-  // Appelle la fonction filterAndSortPokemons
-  filterAndSortPokemons();
-
-  // Evénements
-  searchBar.addEventListener('input', filterAndSortPokemons);
-  selectType.addEventListener('change', filterAndSortPokemons);
+<script src="script.js"></script>
+</body>
+</html>
