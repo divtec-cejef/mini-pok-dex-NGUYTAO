@@ -38,7 +38,7 @@ const pokemonsTab = [
     { name: 'Évoli', type: 'Normal,Combat', level: 22, img: 'evoli.png' },
     { name: 'Dracaufeu', type: 'Feu,Vol', level: 50, img: 'dracaufeu.png' },
     { name: 'Florizarre', type: 'Plante,Poison', level: 55, img: 'florizarre.png' },
-    { name: 'Tortank', type: 'Eau', level: 52, img: 'tortank.png' },
+    { name: 'Tortank', type: 'Eau,toto', level: 52, img: 'tortank.png' },
     { name: 'Mélofée', type: 'Fée', level: 18, img: 'melofee.png' },
     { name: 'Raichu', type: 'Électrique', level: 40, img: 'raichu.png' },
     { name: 'Magicarpe', type: 'Eau', level: 5, img: 'magicarpe.png' },
@@ -47,6 +47,12 @@ const pokemonsTab = [
     { name: 'Ronflex', type: 'Normal', level: 45, img: 'ronflex.png' },
     { name: 'Mewtwo', type: 'Psy', level: 70, img: 'mewtwo.png' }
 ];
+
+// Récupération des éléments HTML
+const searchBar = document.getElementById('search-bar');
+const selectType = document.getElementById('type-filter');
+const selectOrder = document.getElementById('sort-order');
+
 
 /**
  * Fonction qui retourne le code HTML de la carte du pokémon passé en paramètre
@@ -76,24 +82,61 @@ function generatePokemonCardHTML(pokemon){
 /**
  * Affiche le nom des pokémons dans la <div class="pokemon-container">
  */
-function displayPokemons () {
+function displayPokemons (tabPokemons) {
     // Récupération de l'élément HTML <div class="pokemon-container">
     const divContainer = document.querySelector('.pokemon-container');
     // Vide le contenu du container
     divContainer.innerHTML = '';
     // Si tableau est vide, si la taille est de 0
-    if(!pokemonsTab.length) {
+    if(!tabPokemons.length) {
         divContainer.innerHTML = "<p>Dracaufeu a tout brûlé, aucun Pokémon ne correspond à ta recherche !</p>";
         return; // Sort de la fonction
     }
     let resHTML = '';
     // Pour chaque pokémon du tableau pokemons
-    for (let pokemon of pokemonsTab) {
+    for (let pokemon of tabPokemons) {
         resHTML += generatePokemonCardHTML(pokemon);
     }
     // Ajoute les cartes au container
     divContainer.innerHTML = resHTML;
 }
 
-// Appelle la fonction displayPokemons()
-displayPokemons();
+/**
+ * Fonction qui retourne les pokémon qui contiennent
+ * dans leur nom le texte recherché
+ * @returns {*[]} Tableau de Pokémons
+ */
+function filterAndSortPokemons () {
+    const recherche = searchBar.value;
+    // Filtre par txt dans le nom
+    let resultat = pokemonsTab.filter(pokemon => pokemon.name.toLowerCase().includes(recherche.toLowerCase()));
+
+    // Filtre par type
+    let type = selectType.value;
+    resultat = resultat.filter(pokemon => pokemon.type.includes(type));
+
+    // Tri des Pokémons
+    switch (selectOrder.value) {
+        case 'level-asc' :
+            resultat.sort((a, b) => a.level - b.level);
+            break;
+        case 'level-desc' :
+            resultat.sort((a, b) => b.level - a.level);
+            break;
+        case 'name-desc' :
+            resultat.sort((a, b) => b.name.localeCompare(a.name));
+            break;
+        default :
+            resultat.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    displayPokemons(resultat)
+}
+
+// Appelle la fonction filterAndSortPokemons
+filterAndSortPokemons();
+
+// Evénements
+searchBar.addEventListener('input', filterAndSortPokemons);
+selectType.addEventListener('change', filterAndSortPokemons);
+selectOrder.addEventListener('change', filterAndSortPokemons);
